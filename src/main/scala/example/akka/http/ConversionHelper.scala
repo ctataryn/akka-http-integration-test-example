@@ -40,7 +40,7 @@ object ConversionHelper extends DefaultJsonProtocol with SprayJsonSupport  {
     sprayJsonUnmarshallerConverter[User](userFormat)
   
   implicit val userCreatedStatusResultJsonFormat = jsonFormat2(UserCreatedStatusResult)
-  implicit val userCreatedStatusResultUnmarshaller: FromEntityUnmarshaller[UserCreatedStatusResult] =
+  implicit val userCreatedStatusResultUnmarshaller =
     sprayJsonUnmarshallerConverter[UserCreatedStatusResult](userCreatedStatusResultJsonFormat)
   
 }
