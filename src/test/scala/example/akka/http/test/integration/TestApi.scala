@@ -15,12 +15,15 @@ import akka.http.scaladsl.client.RequestBuilding._
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import spray.json._
 import DefaultJsonProtocol._
+import akka.http.scaladsl.unmarshalling.Unmarshal
+import akka.stream.ActorMaterializer
 
 class TestApi extends Specification {
   implicit val system = ActorSystem()
+  implicit val materializer = ActorMaterializer()
   
   def waitOnResponse(request: HttpRequest): HttpResponse = {
-    Await.result(Http().singleRequest(request), Duration(20, "seconds"))
+    Await.result(Http().singleRequest(request), Duration("20s"))
   }
   
   sequential
@@ -29,7 +32,7 @@ class TestApi extends Specification {
   val knownUuid = UUID.fromString("05ea4e86-c742-11e9-aa8c-2a2ae2dbcce4")
   var dto:User = null
   step {
-    dto = waitOnResponse(Get(endpoint))
+    dto = Await.result(Unmarshal(waitOnResponse(Get(endpoint))).to[User], Duration("20s"))
   }
 
   "calling GET /user" should {

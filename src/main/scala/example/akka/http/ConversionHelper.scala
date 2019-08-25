@@ -3,6 +3,7 @@ package example.akka.http
 import java.util.UUID
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
+import akka.http.scaladsl.unmarshalling.FromEntityUnmarshaller
 import spray.json.DefaultJsonProtocol._
 import spray.json._
 
@@ -27,11 +28,19 @@ object ConversionHelper extends DefaultJsonProtocol with SprayJsonSupport  {
   }
   
   implicit val metaJsonFormat = jsonFormat3(Meta)
-
-  implicit val emptyStatusResultJsonFormat = jsonFormat1(EmptyStatusResult)
-
-  implicit val userFormat = jsonFormat3(User)
-  implicit val userCreatedStatusResultJsonFormat = jsonFormat2(UserCreatedStatusResult)
+  implicit val metaUnmarshaller =
+    sprayJsonUnmarshallerConverter[Meta](metaJsonFormat)
   
+  implicit val emptyStatusResultJsonFormat = jsonFormat1(EmptyStatusResult)
+  implicit val emptyStatusResultDtoUnmarshaller =
+    sprayJsonUnmarshallerConverter[EmptyStatusResult](emptyStatusResultJsonFormat)
+  
+  implicit val userFormat = jsonFormat3(User)
+  implicit val userUnmarsharller =
+    sprayJsonUnmarshallerConverter[User](userFormat)
+  
+  implicit val userCreatedStatusResultJsonFormat = jsonFormat2(UserCreatedStatusResult)
+  implicit val userCreatedStatusResultUnmarshaller: FromEntityUnmarshaller[UserCreatedStatusResult] =
+    sprayJsonUnmarshallerConverter[UserCreatedStatusResult](userCreatedStatusResultJsonFormat)
   
 }
