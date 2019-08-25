@@ -1,0 +1,3 @@
+# Running
+
+`sbt test`
